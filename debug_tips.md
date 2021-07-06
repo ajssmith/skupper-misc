@@ -37,6 +37,12 @@ Resource exploration
 
     kubectl explain deployment.spec
 
+Common Pod error statuses
+
+    `ImagePullBackoff`, `ErrImagePull` - Image could not be pulled from registry
+    `CrashLoopBackOff` - Command run in container crashes
+    `CreateContainerConfigError` - Referenced ConfigMap or Secret not found
+
 ## Skupper status
 
 From the namespace Skupper was deployed, use the Skupper cli to review status
@@ -67,6 +73,24 @@ View the service controller logs
    ```bash
    kubectl logs -f deploy/skupper-service-controller
    ```
+
+## Skupper ConfigMaps
+
+`skupper-internal` holds qdrouterd configuration
+
+    kubectl describe cm skupper-internal
+
+`skupper-sasl-config` holds qdrouterd sasl config file
+
+    kubectl describe cm skupper-sasl-config
+
+`skupper-services` contains known skupper network services
+
+    kubectl describe cm skupper-services
+
+`skupper-site` holds skupper site configuration
+
+    kubectl describe cm skupper-site
 
 ## Exec qdtools
 
@@ -119,3 +143,13 @@ Show exposed services
 Show connected sites
 
     kubectl exec deploy/skupper-service-controller -- get sites
+
+## Skupper Resource Requirements
+
+CPU and Memory request for skupper-router pod
+
+    skupper init --router-cpu 2 --router-memory 1024m
+
+CPU and Memory request for skupper-service-controller pod
+
+    skupper init --controller-cpu 0.5 --controller-memory 512m
