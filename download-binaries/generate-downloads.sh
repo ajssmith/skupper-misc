@@ -63,7 +63,7 @@ wget https://download.devel.redhat.com/brewroot/vol/rhel-9/packages/skupper-cli/
 rpmdev-extract skupper-cli-$version-$buildnum.el9.src.rpm
 tar -czf skupper-cli-$version-$buildnum.el9.src.tar.gz skupper-cli-$version-$buildnum.el9.src
 popd
-./required-images.sh $sources_dir/skupper-cli-$version-$buildnum.el9.src/images.go RHSI-$release/required-images.txt
+./required-images.sh $sources_dir/skupper-cli-$version-$buildnum.el9.src/images.go RHSI-$release/skupper-cli-$version-required-images.txt
 
 
 cp $sources_dir/skupper-cli-$version-$buildnum.el9.src.tar.gz RHSI-$release
