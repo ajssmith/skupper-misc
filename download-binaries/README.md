@@ -2,8 +2,7 @@
 1. Create staging directory
 2. Clone this repo
 3. Get generate-download.sh
-4. Update release, version, build, etc.
-5. run Script
+4. ./generate-download 1.5.5 1
 6. Submit ticket to post to download site
 
 

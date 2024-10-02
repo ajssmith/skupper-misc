@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-version="1.5.3"
-buildnum="5"
+version=$1
+buildnum=$2
 release=$version.GA
 x86_linux_dir=./x86/skupper-cli-linux-on-x86-64-$version
 x86_macosx_dir=./x86/skupper-cli-macosx-on-x86-64-$version
@@ -59,13 +59,15 @@ cp x86/* RHSI-$release
 
 mkdir -p $sources_dir
 pushd $sources_dir
-wget https://download.devel.redhat.com/brewroot/vol/rhel-9/packages/skupper-cli/1.5.3/5.el9/src/skupper-cli-1.5.3-5.el9.src.rpm
-rpmdev-extract skupper-cli-1.5.3-5.el9.src.rpm
-tar -czf skupper-cli-1.5.3-5.el9.src.tar.gz skupper-cli-1.5.3-5.el9.src
+wget https://download.devel.redhat.com/brewroot/vol/rhel-9/packages/skupper-cli/$version/$buildnum.el9/src/skupper-cli-$version-$buildnum.el9.src.rpm
+rpmdev-extract skupper-cli-$version-$buildnum.el9.src.rpm
+tar -czf skupper-cli-$version-$buildnum.el9.src.tar.gz skupper-cli-$version-$buildnum.el9.src
 popd
+./required-images.sh $sources_dir/skupper-cli-$version-$buildnum.el9.src/images.go RHSI-$release/required-images.txt
 
-cp $sources_dir/skupper-cli-1.5.3-5.el9.src.tar.gz RHSI-$release
-cp $release/redistributable/x86_64/usr/share/licenses/skupper-cli-redistributable/LICENSE RHSI-$release/license.txt
+
+cp $sources_dir/skupper-cli-$version-$buildnum.el9.src.tar.gz RHSI-$release
+cp $release/redistributable/x86_64/usr/share/licenses/skupper-cli-redistributable/LICENSE RHSI-$release/skupper-cli-$version-license.txt
 
 rm -rf $sources_dir
 rm -rf $release aarch64 x86
