@@ -9,8 +9,11 @@ x86_windows_dir=./x86/skupper-cli-windows-on-x86-64-$version
 x86_path=$release/redistributable/x86_64/usr/share/skupper-cli
 aarch64_linux_dir=./aarch64/skupper-cli-linux-on-aarch64-$release
 aarch64_path=$release/redistributable/aarch64/usr/share/skupper-cli
+s390x_linux_dir=./s390x/skupper-cli-linux-on-s390x-$release
+s390x_path=$release/redistributable/s390x/usr/share/skupper-cli
 sources_dir=./skupper-sources-$release
 
+### x86_64
 mkdir -p $release/redistributable/x86_64
 pushd $release/redistributable/x86_64
 wget https://download.devel.redhat.com/brewroot/vol/rhel-9/packages/skupper-cli/$version/$buildnum.el9/x86_64/skupper-cli-redistributable-$version-$buildnum.el9.x86_64.rpm
@@ -36,6 +39,7 @@ rm -rf ./skupper-cli-macosx-on-x86-64-$version
 rm -rf ./skupper-cli-windows-on-x86-64-$version
 popd
 
+### aarch64
 mkdir -p $release/redistributable/aarch64
 pushd $release/redistributable/aarch64
 wget https://download.devel.redhat.com/brewroot/vol/rhel-9/packages/skupper-cli/$version/$buildnum.el9/aarch64/skupper-cli-redistributable-$version-$buildnum.el9.aarch64.rpm
@@ -52,7 +56,25 @@ tar -czvf skupper-cli-linux-on-aarch64-$release.tar.gz ./skupper-cli-linux-on-aa
 rm -rf ./skupper-cli-linux-on-aarch64-$release
 popd
 
+### s390x
+mkdir -p $release/redistributable/s390x
+pushd $release/redistributable/s390x
+wget https://download.devel.redhat.com/brewroot/vol/rhel-9/packages/skupper-cli/$version/$buildnum.el9/s390x/skupper-cli-redistributable-$version-$buildnum.el9.s390x.rpm
+rpm2archive skupper-cli-redistributable-$version-$buildnum.el9.s390x.rpm
+tar -xvf skupper-cli-redistributable-$version-$buildnum.el9.s390x.rpm.tgz
+rm skupper-cli-redistributable-$version-$buildnum.el9.s390x.rpm
+popd
+
+mkdir -p $s390x_linux_dir
+cp $s390x_path/linux/skupper $s390x_linux_dir
+
+pushd s390x
+tar -czvf skupper-cli-linux-on-s390x-$release.tar.gz ./skupper-cli-linux-on-s390x-$release
+rm -rf ./skupper-cli-linux-on-s390x-$release
+popd
+
 mkdir -p RHSI-$release
+cp s390x/* RHSI-$release
 cp aarch64/* RHSI-$release
 cp x86/* RHSI-$release
 
@@ -70,4 +92,4 @@ cp $sources_dir/skupper-cli-$version-$buildnum.el9.src.tar.gz RHSI-$release
 cp $release/redistributable/x86_64/usr/share/licenses/skupper-cli-redistributable/LICENSE RHSI-$release/skupper-cli-$version-license.txt
 
 rm -rf $sources_dir
-rm -rf $release aarch64 x86
+rm -rf $release aarch64 x86 s390x
