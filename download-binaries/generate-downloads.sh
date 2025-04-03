@@ -2,6 +2,7 @@
 
 version=$1
 buildnum=$2
+branch=$3
 release=$version.GA
 x86_linux_dir=./x86/skupper-cli-linux-on-x86-64-$version
 x86_macosx_dir=./x86/skupper-cli-macosx-on-x86-64-$version
@@ -12,6 +13,7 @@ aarch64_path=$release/redistributable/aarch64/usr/share/skupper-cli
 s390x_linux_dir=./s390x/skupper-cli-linux-on-s390x-$release
 s390x_path=$release/redistributable/s390x/usr/share/skupper-cli
 sources_dir=./skupper-sources-$release
+deployment_dir=./skupper-deployment-$release
 
 ### x86_64
 mkdir -p $release/redistributable/x86_64
@@ -87,9 +89,21 @@ tar -czf skupper-cli-$version-$buildnum.el9.src.tar.gz skupper-cli-$version-$bui
 popd
 ./required-images.sh $sources_dir/skupper-cli-$version-$buildnum.el9.src/images.go RHSI-$release/skupper-cli-$version-required-images.txt
 
+mkdir -p $deployment_dir
+pushd $deployment_dir
+git clone https://pkgs.devel.redhat.com/git/containers/skupper-operator-bundle
+cd skupper-operator-bundle
+git checkout $branch
+cd deployment
+tar -czvf ../../skupper-deployments-$version.tar.gz ./
+cd ../../
+popd
+
 
 cp $sources_dir/skupper-cli-$version-$buildnum.el9.src.tar.gz RHSI-$release
 cp $release/redistributable/x86_64/usr/share/licenses/skupper-cli-redistributable/LICENSE RHSI-$release/skupper-cli-$version-license.txt
+cp $deployment_dir/skupper-deployments-$version.tar.gz RHSI-$release
 
 rm -rf $sources_dir
 rm -rf $release aarch64 x86 s390x
+rm -rf $deployment_dir
