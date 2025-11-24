@@ -152,7 +152,12 @@ wget https://download.devel.redhat.com/brewroot/vol/rhel-9/packages/skupper-cli/
 rpmdev-extract skupper-cli-$version-$buildnum.el9.src.rpm
 tar -czf skupper-cli-$version-$buildnum.el9.src.tar.gz skupper-cli-$version-$buildnum.el9.src
 popd
-./required-images.sh $sources_dir/skupper-cli-$version-$buildnum.el9.src/images.go RHSI-$release/skupper-cli-$version-required-images.txt
+# Check if we want the sources for V1 or V2
+if [ "${version:0:1}" == "2" ]; then
+  ./required-images-v2.sh $sources_dir/skupper-cli-$version-$buildnum.el9.src/images.go RHSI-$release/skupper-cli-$version-required-images.txt
+else
+  ./required-images-v1.sh $sources_dir/skupper-cli-$version-$buildnum.el9.src/images.go RHSI-$release/skupper-cli-$version-required-images.txt
+fi
 echo "==  Sources created"
 
 #
