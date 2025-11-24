@@ -25,6 +25,8 @@ aarch64_linux_dir=./aarch64/skupper-cli-linux-on-aarch64-$release
 aarch64_path=$release/redistributable/aarch64/usr/share/skupper-cli
 s390x_linux_dir=./s390x/skupper-cli-linux-on-s390x-$release
 s390x_path=$release/redistributable/s390x/usr/share/skupper-cli
+ppc64le_linux_dir=./ppc64le/skupper-cli-linux-on-ppc64le-$release
+ppc64le_path=$release/redistributable/ppc64le/usr/share/skupper-cli
 sources_dir=./skupper-sources-$release
 deployment_dir=./skupper-deployment-$release
 
@@ -101,6 +103,26 @@ tar -czvf skupper-cli-linux-on-s390x-$release.tar.gz ./skupper-cli-linux-on-s390
 rm -rf ./skupper-cli-linux-on-s390x-$release
 popd
 
+### ppc64le 
+echo ""
+echo "==  01.4 - Generating Downloads for PPC64LE"
+mkdir -p $release/redistributable/ppc64le
+pushd $release/redistributable/ppc64le
+wget https://download.devel.redhat.com/brewroot/vol/rhel-9/packages/skupper-cli/$version/$buildnum.el9/ppc64le/skupper-cli-redistributable-$version-$buildnum.el9.ppc64le.rpm
+rpm2archive skupper-cli-redistributable-$version-$buildnum.el9.ppc64le.rpm
+tar -xvf skupper-cli-redistributable-$version-$buildnum.el9.ppc64le.rpm.tgz
+rm skupper-cli-redistributable-$version-$buildnum.el9.ppc64le.rpm
+popd
+
+mkdir -p $ppc64le_linux_dir
+cp $ppc64le_path/linux/skupper $ppc64le_linux_dir
+
+pushd ppc64le
+tar -czvf skupper-cli-linux-on-ppc64le-$release.tar.gz ./skupper-cli-linux-on-ppc64le-$release
+rm -rf ./skupper-cli-linux-on-ppc64le-$release
+popd
+
+
 echo ""
 echo "==============================================="
 echo "== STEP 02 - Copy artifacts to RHSI-$release =="
@@ -115,6 +137,9 @@ cp aarch64/* RHSI-$release
 echo ""
 echo "==  02.3 - Copying x86_64"
 cp x86/* RHSI-$release
+echo ""
+echo "==  02.4 - Copying PPC64LE"
+cp ppc64le/* RHSI-$release
 
 
 echo ""
@@ -171,5 +196,5 @@ echo "==============================================="
 echo "== STEP 06 - Cleanup                         =="
 echo "==============================================="
 rm -rf $sources_dir
-rm -rf $release aarch64 x86 s390x
+rm -rf $release aarch64 x86 s390x ppc64le
 rm -rf $deployment_dir
